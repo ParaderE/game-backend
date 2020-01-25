@@ -1,5 +1,5 @@
 from random import choice
-from objects import Gates, TradeStation, QuestStation
+from .objects import Gates, TradeStation, QuestStation
 
 
 class Map:
@@ -28,11 +28,6 @@ class Map:
     def add_secret_location(self, location):
         self.secret_locations.append(location)
 
-    # def update(self, data):
-    #     for record in data:
-    #         location = self.locations[record['location']]
-    #         location.update()
-
 class Location:
 
     def __init__(self, n,  *objects):
@@ -60,10 +55,6 @@ class Location:
     
     def get_objects(self):
         return [(obj.number, obj.type, obj.coords) for obj in self.objects.values]
-    
-    @property
-    def directions(self) -> dict:
-        """return a dict where keys is a connection method and values connected locations"""
 
 
 graph = Map()

@@ -10,9 +10,14 @@ app = Flask(__name__)
 @app.route("/register/", methods=['POST'])
 def register():
 	response = {
-		"is_free": True 
+		"is_free": True,
+		'location': {
+			'location_num': 4,
+			'coords': [200, 200]
+		}
 	}
 	account = request.json['account']
+	graph[4].update(account, (200, 200))
 	with open('data/players', 'r+') as f:
 		if account in f.read():
 			response["is_free"] = False
@@ -21,12 +26,31 @@ def register():
 	return json.dumps(response)
 
 
+@app.route("/enter/", methods=['POST'])
+def enter():
+	req = request.json
+	account = req['account']
+	with open('data/players_coords') as f:
+		location, coords = json.load(f)[account]
+	response = {
+		'location': {
+			'num': location,
+			'coords': coords
+		}
+	}
+	return json.dumps(response)
+
+
 @app.route("/exit/", methods=["POST"])
 def exit():
 	req = request.json
 	account = req['account']
-	coords = req['coords']
-	# save player data to json file
+	location = req['location']
+	location_num = location['num']
+	coords = location['coords']
+	del graph[location_num][account]
+	with open('data/players_coords') as f:
+		json.dump({account: [location, coords]}, f)
 	return ""
 
 
@@ -38,9 +62,6 @@ def update_position():
 	location_num = location['num']
 	coords = location['coords']
 
-	player = {
-		'name': '',
-		'coords': []}
 	response = {
 		'players': []
 	}
@@ -53,7 +74,7 @@ def update_position():
 	return json.dumps(response)
 
 
-@app.route("/stations/", method=["POST"])
+@app.route("/stations/", methods=["POST"])
 def get_station_data():
 	req =  request.json
 	location = req['location']
@@ -65,7 +86,7 @@ def get_station_data():
 		response = graph[location][station][npc].get_phrases()
 	return json.dumps(response)
 
-@app.route("/jump/gates/", method=["POST"])
+@app.route("/jump/gates/", methods=["POST"])
 def gate_jump():
 	req =  request.json
 	account = req['account']
@@ -78,14 +99,16 @@ def gate_jump():
 	}
 	return json.dumps(response)
 
-@app.route("/jump/just/", method=["POST"])
+@app.route("/jump/just/", methods=["POST"])
 def just_jump():
 	req =  request.json
 	location = req['location']
 	new_location_num = req['new_location']
 	new_location = graph[new_location_num]
+	location = graph[location_num]
+	del location[account]
 	response = {
-		'location': new_location_num
+		'location': new_location_num,
 		'objects': new_location.get_objects()
 	}
 	return json.dumps(response)

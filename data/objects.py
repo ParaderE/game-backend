@@ -21,10 +21,6 @@ class Player:
 
     def __init__(self, name):
         self.name = name
-    
-
-    
-
 
 
 class Gates(SpaceObject):
@@ -57,4 +53,4 @@ class QuestStation:
 
 
 class Turret(SpaceObject):
-
+    pass
