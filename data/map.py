@@ -1,4 +1,4 @@
-from objects import Gates, TradeStation, QuestStation
+from objects import Gate, TradeStation, QuestStation, Turret
 
 
 class Map:
@@ -14,14 +14,7 @@ class Map:
     def add_location(self, location):
         """add location to the graph map"""
         self.locations[location.number] = location
-    
-    def connect_locations_with_jump(self, key, *locations):
-        """connect locations using jumps"""
-        self.locations[key].set_directions(0, *[self.locations[i] for i in locations])
-    
-    def connect_locations_with_gates(self, key, *locations):
-        """connect locations using gates"""
-        self.locations[key].set_directions(1, *[self.locations[i] for i in locations])
+
 
 class Location:
 
@@ -37,15 +30,9 @@ class Location:
         del self.players[key]
 
     def update(self, account, coords):
+        """update players coords on the location"""
         self.players[account] = {'name': account, 'coords': coords}
         return [(pl['name'], pl['coords']) for pl in self.players.values()]
-
-    def set_directions(self, connection_method: int = 0, *locations):
-        """connect locations using given method
-        connection_method = 0 -> connection with jump
-        connection_method = 1 -> connection with gate
-        If connection_method = 1 random free gates are selected for connection
-        """
     
     def add_objects(self, *objects):
         self.objects = {object.number: object for object in objects}
@@ -55,4 +42,48 @@ class Location:
 
 
 graph = Map()
+[graph.add_location(Location(i)) for i in range(1, 11)]
 
+#%% Location 4 
+graph[4].add_objects(
+    Gate((340, 50), 1),
+    Gate((320, 380), 2),
+    TradeStation((205, 190), 3),
+    QuestStation((160, 160), 4)
+)
+graph[4][1].link(9)
+graph[4][2].link(6)
+###
+#%% Location 1
+graph[1].add_objects(
+    Gate((20, 376), 1),
+    Turret((20, 20), 2),
+    Turret((100, 100), 3),
+    Turret((180, 180), 4),
+    Turret((260, 260), 5),
+    Turret((340, 340), 6)
+)
+graph[1][1].link(8)
+###
+#%% Location 6
+graph[6].add_objects(
+    Gate((100, 100), 1),
+    Gate((376, 99), 2)
+)
+graph[6][1].link(4)
+graph[6][2].link(10)
+###
+#%% location 10
+graph[10].add_objects(
+    Gate((100, 100), 1),
+    Gate((376, 99), 2)
+)
+graph[10][1].link(6)
+graph[10][2].link(9)
+###
+#%% Location 9
+graph[9].add_objects(
+    Gate((276, 199), 1),
+)
+graph[9][1].link(10)
+###

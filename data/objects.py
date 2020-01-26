@@ -1,3 +1,5 @@
+import sqlite3 as sql
+
 class SpaceObject:
 
     def __init__(self, coords, number):
@@ -10,8 +12,21 @@ class NPCObjects:
     def __init__(self, name):
         self.name = name
     
-    def get_phrases(self, stage):
-        pass
+    def get_phrase(self, stage):
+        with sql.connect('npc.db') as con:
+            cur = con.cursor()
+            phrase = cur.execute(f"""SELECT phrase FROM phrases
+            WHERE npc = {self.name} AND stage = {stage}""").fetchone()
+        return phrase
+
+
+class TradeNPC(NPCObjects):
+
+    def __init__(self, name):
+        self.name = name
+    
+    def get_phrase(self):
+        return super().get_phrase(0)
 
 
 class Player:
@@ -20,7 +35,7 @@ class Player:
         self.name = name
 
 
-class Gates(SpaceObject):
+class Gate(SpaceObject):
     type = 'gate'
 
     def __init__(self, coords, number):
@@ -28,6 +43,9 @@ class Gates(SpaceObject):
     
     def link(self, location):
         self.linked_location = location
+    
+    def get_location(self):
+        return self.linked_location
 
 
 class TradeStation(SpaceObject):
@@ -44,8 +62,10 @@ class TradeStation(SpaceObject):
 class QuestStation:
     type = 'quest_station'
 
-    def __init__(self, coords, number, npc):
+    def __init__(self, coords, number):
         super().__init__(coords, number)
+    
+    def add_npc(self, npc):
         self.npc = npc
 
 

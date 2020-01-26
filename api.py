@@ -22,7 +22,7 @@ def register():
 	}
 	req = request.json
 	account = req['account']
-	# graph[4].update(account, (200, 200))
+	graph[4].update(account, (200, 200))
 	with open('data/players', 'r+') as f, open('data/players_coords.json', 'r+') as json_f:
 		if account in f.read():
 			response["is_free"] = False
@@ -58,7 +58,7 @@ def exit():
 	location = req['location']
 	location_num = location['num']
 	coords = location['coords']
-	# del graph[location_num][account]
+	del graph[location_num][account]
 	with open('data/players_coords.json', 'r+') as json_f:
 		data = json.load(json_f)
 		data[account] = [location_num, coords]
@@ -99,6 +99,7 @@ def get_station_data():
 		response = graph[location][station][npc].get_phrases()
 	return json.dumps(response)
 
+
 @app.route("/jump/gates/", methods=["POST"])
 def gate_jump():
 	req =  request.json
@@ -107,10 +108,13 @@ def gate_jump():
 	gate = req['object']
 	location = graph[location_num]
 	del location[account]
+	new_location = graph[location_num][gate].get_location()
 	response = {
-		'location': graph[location_num][gate].get_location()
+		'location': new_location,
+		'objects': graph[new_location].get_objects()
 	}
 	return json.dumps(response)
+
 
 @app.route("/jump/just/", methods=["POST"])
 def just_jump():
