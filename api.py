@@ -1,10 +1,14 @@
 import json
-from itertools import islice
 
 from data.map import graph
 
 from flask import Flask, request
 app = Flask(__name__)
+
+
+@app.route("/")
+def home():
+	return "running"
 
 
 @app.route("/register/", methods=['POST'])
@@ -16,21 +20,27 @@ def register():
 			'coords': [200, 200]
 		}
 	}
-	account = request.json['account']
-	graph[4].update(account, (200, 200))
-	with open('data/players', 'r+') as f:
+	req = request.json
+	account = req['account']
+	# graph[4].update(account, (200, 200))
+	with open('data/players', 'r+') as f, open('data/players_coords.json', 'r+') as json_f:
 		if account in f.read():
 			response["is_free"] = False
+			response['location'] = None
 		else:
 			f.write(account + '\n')
-	return json.dumps(response)
+			data = json.load(json_f)
+			data[account] = [4, [200, 200]]
+			json_f.seek(0)
+			json.dump(data, json_f)
+	return response
 
 
 @app.route("/enter/", methods=['POST'])
 def enter():
 	req = request.json
 	account = req['account']
-	with open('data/players_coords') as f:
+	with open('data/players_coords.json') as f:
 		location, coords = json.load(f)[account]
 	response = {
 		'location': {
@@ -38,7 +48,7 @@ def enter():
 			'coords': coords
 		}
 	}
-	return json.dumps(response)
+	return response
 
 
 @app.route("/exit/", methods=["POST"])
@@ -48,13 +58,16 @@ def exit():
 	location = req['location']
 	location_num = location['num']
 	coords = location['coords']
-	del graph[location_num][account]
-	with open('data/players_coords') as f:
-		json.dump({account: [location, coords]}, f)
+	# del graph[location_num][account]
+	with open('data/players_coords.json', 'r+') as json_f:
+		data = json.load(json_f)
+		data[account] = [location_num, coords]
+		json_f.seek(0)
+		json.dump(data, json_f)
 	return ""
 
 
-@app.route("/a/", methods=["POST"])
+@app.route("/update/", methods=["POST"])
 def update_position():
 	req = request.json
 	account = req['account']
@@ -95,14 +108,15 @@ def gate_jump():
 	location = graph[location_num]
 	del location[account]
 	response = {
-		'location': graph[location_num][gates].get_location()
+		'location': graph[location_num][gate].get_location()
 	}
 	return json.dumps(response)
 
 @app.route("/jump/just/", methods=["POST"])
 def just_jump():
 	req =  request.json
-	location = req['location']
+	account = req['account']
+	location_num = req['location']
 	new_location_num = req['new_location']
 	new_location = graph[new_location_num]
 	location = graph[location_num]

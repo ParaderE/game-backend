@@ -1,5 +1,4 @@
-from random import choice
-from .objects import Gates, TradeStation, QuestStation
+from objects import Gates, TradeStation, QuestStation
 
 
 class Map:
@@ -7,11 +6,10 @@ class Map:
 
     def __init__(self):
         self.locations = dict()
-        self.secret_locations = list()
     
     def __getitem__(self, key: int):
         """return a location with such key else return a random hidden location"""
-        return self.locations.get(key, choice(self.secret_locations))
+        return self.locations[key]
 
     def add_location(self, location):
         """add location to the graph map"""
@@ -25,16 +23,12 @@ class Map:
         """connect locations using gates"""
         self.locations[key].set_directions(1, *[self.locations[i] for i in locations])
 
-    def add_secret_location(self, location):
-        self.secret_locations.append(location)
-
 class Location:
 
-    def __init__(self, n,  *objects):
+    def __init__(self, n):
         """initialize a location with """
         self.number = n
-        self.objects = {object.number: object for object in objects}
-        self.players = list()
+        self.players = dict()
     
     def __getitem__(self, key):
         return self.objects[key]
@@ -52,6 +46,9 @@ class Location:
         connection_method = 1 -> connection with gate
         If connection_method = 1 random free gates are selected for connection
         """
+    
+    def add_objects(self, *objects):
+        self.objects = {object.number: object for object in objects}
     
     def get_objects(self):
         return [(obj.number, obj.type, obj.coords) for obj in self.objects.values]

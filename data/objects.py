@@ -1,6 +1,3 @@
-import sqlite3
-
-
 class SpaceObject:
 
     def __init__(self, coords, number):
@@ -11,7 +8,7 @@ class SpaceObject:
 class NPCObjects:
 
     def __init__(self, name):
-        self.name
+        self.name = name
     
     def get_phrases(self, stage):
         pass
