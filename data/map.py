@@ -1,4 +1,4 @@
-from objects import Gate, TradeStation, QuestStation, Turret
+from .objects import Gate, TradeStation, QuestStation, Turret
 
 
 class Map:

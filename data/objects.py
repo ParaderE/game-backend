@@ -38,9 +38,6 @@ class Player:
 class Gate(SpaceObject):
     type = 'gate'
 
-    def __init__(self, coords, number):
-        super().__init__(coords)
-    
     def link(self, location):
         self.linked_location = location
     
@@ -59,7 +56,7 @@ class TradeStation(SpaceObject):
         return self.npc.get(key, 0)
 
 
-class QuestStation:
+class QuestStation(SpaceObject):
     type = 'quest_station'
 
     def __init__(self, coords, number):
