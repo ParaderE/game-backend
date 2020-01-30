@@ -50,6 +50,20 @@ def enter():
 	}
 	return response
 
+@app.route('/objects/', methods=["POST"])
+def get_objects():
+	req = request.json
+	account = req['account']
+	location = req['location']
+	location_num = location['num']
+
+	location = graph[location_num]
+	response = {
+		'obkects': location.get_objects()
+	}
+
+	return response
+
 
 @app.route("/exit/", methods=["POST"])
 def exit():
@@ -84,7 +98,7 @@ def update_position():
 	for player in players:
 		response['players'].append({'name': player.name, 'coords': player.coords})
 
-	return json.dumps(response)
+	return response
 
 
 @app.route("/stations/", methods=["POST"])
@@ -97,7 +111,7 @@ def get_station_data():
 		response = graph[location][station].get_npc()
 	else:
 		response = graph[location][station][npc].get_phrases()
-	return json.dumps(response)
+	return response
 
 
 @app.route("/jump/gates/", methods=["POST"])
@@ -113,7 +127,7 @@ def gate_jump():
 		'location': new_location,
 		'objects': graph[new_location].get_objects()
 	}
-	return json.dumps(response)
+	return response
 
 
 @app.route("/jump/just/", methods=["POST"])
@@ -129,4 +143,4 @@ def just_jump():
 		'location': new_location_num,
 		'objects': new_location.get_objects()
 	}
-	return json.dumps(response)
+	return respons
