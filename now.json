@@ -3,8 +3,7 @@
     "builds": [
       {
         "src": "*.py",
-        "use": "@now/python",
-        "includeFiles": "players.db"
+        "use": "@now/python"
       }
     ],
     "routes": [
