@@ -153,7 +153,3 @@ def just_jump():
 		'objects': new_location.get_objects()
 	}
 	return respons
- 
-
-if __name__ == "__main__":
-	app.run(port=5000)
