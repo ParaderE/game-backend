@@ -1,4 +1,4 @@
-import json
+import sqlite3
 
 from data.map import graph
 
@@ -22,17 +22,18 @@ def register():
 	}
 	req = request.json
 	account = req['account']
+	login = account['login']
+	password = account['password']
 	graph[4].update(account, (200, 200))
-	with open('data/players', 'r+') as f, open('data/players_coords.json', 'r+') as json_f:
-		if account in f.read():
-			response["is_free"] = False
-			response['location'] = None
-		else:
-			f.write(account + '\n')
-			data = json.load(json_f)
-			data[account] = [4, [200, 200]]
-			json_f.seek(0)
-			json.dump(data, json_f)
+	with sqlite3.connect('players.db') as con:
+		cur = con.cursor()
+		res = cur.execute(f"SELECT * FROM Players WHERE name={login} AND password={password}").fetchall()
+		is_free = len(res) == 0
+		response['is_free'] = is_free
+		if is_free:
+			cur.execute(f"""INSERT INTO Players (name, password, location, x, y, health)
+						VALUES ({login}, {password}, {4}, {200}, {200}, {100});""")
+		con.commit()
 	return response
 
 
@@ -40,12 +41,17 @@ def register():
 def enter():
 	req = request.json
 	account = req['account']
-	with open('data/players_coords.json') as f:
-		location, coords = json.load(f)[account]
+	login = account['login']
+	password = account['password']
+
+	with sqlite3.connect('players.db') as con:
+		cur = con.cursor()
+		res = cur.execute(f"SELECT location, x, y FROM Players WHERE name={login} AND password={password}").fetchall()
+
 	response = {
 		'location': {
-			'num': location,
-			'coords': coords
+			'num': res[0],
+			'coords': res[1:]
 		}
 	}
 	return response
@@ -53,7 +59,6 @@ def enter():
 @app.route('/objects/', methods=["POST"])
 def get_objects():
 	req = request.json
-	account = req['account']
 	location = req['location']
 	location_num = location['num']
 
@@ -69,15 +74,21 @@ def get_objects():
 def exit():
 	req = request.json
 	account = req['account']
+	login = account['login']
+	password = account['password']
+
 	location = req['location']
 	location_num = location['num']
 	coords = location['coords']
-	del graph[location_num][account]
-	with open('data/players_coords.json', 'r+') as json_f:
-		data = json.load(json_f)
-		data[account] = [location_num, coords]
-		json_f.seek(0)
-		json.dump(data, json_f)
+
+	del graph[location_num][login + " " + password]
+	with sqlite3.connect('players.db') as con:
+		cur = con.cursor()
+		cur.execute(f"""UPDATE Players
+		location = {location_num},
+		x = {coords[0]}, y = {coords[1]}
+		WHERE name = {login} AND password = {password}""")
+		con.commit()
 	return ""
 
 
@@ -94,9 +105,7 @@ def update_position():
 	}
 
 	location = graph[location_num]
-	players = location.update(account, coords)
-	for player in players:
-		response['players'].append({'name': player.name, 'coords': player.coords})
+	response['players'] = [{'name': player.name, 'coords': player.coords} for player in location.update(account, coords)]
 
 	return response
 
