@@ -1,14 +1,10 @@
 {
     "version": 2,
-    "functions": {
-      "api.py": {
-        "includeFiles": "players.db",
-      }
-    },
     "builds": [
       {
         "src": "*.py",
-        "use": "@now/python"
+        "use": "@now/python",
+        "includeFiles": "players.db"
       }
     ],
     "routes": [
