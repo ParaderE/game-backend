@@ -24,7 +24,7 @@ def register():
 	account = req['account']
 	login = account['login']
 	password = account['password']
-	graph[4].update(account, (200, 200))
+	graph[4].update(login + " " + password, (200, 200))
 	with sqlite3.connect('players.db') as con:
 		cur = con.cursor()
 		res = cur.execute(f"SELECT * FROM Players WHERE name={login} AND password={password}").fetchall()
@@ -50,8 +50,8 @@ def enter():
 
 	response = {
 		'location': {
-			'num': res[0],
-			'coords': res[1:]
+			'num': res[0][0],
+			'coords': res[0][1:]
 		}
 	}
 	return response
@@ -64,7 +64,7 @@ def get_objects():
 
 	location = graph[location_num]
 	response = {
-		'obkects': location.get_objects()
+		'objects': location.get_objects()
 	}
 
 	return response
@@ -153,3 +153,4 @@ def just_jump():
 		'objects': new_location.get_objects()
 	}
 	return respons
+ 

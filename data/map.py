@@ -38,7 +38,7 @@ class Location:
         self.objects = {object.number: object for object in objects}
     
     def get_objects(self):
-        return [(obj.number, obj.type, obj.coords) for obj in self.objects.values]
+        return [(obj.number, obj.type, obj.coords) for obj in self.objects.values()]
 
 
 graph = Map()
