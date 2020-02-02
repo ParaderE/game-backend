@@ -16,7 +16,7 @@ def register():
 	response = {
 		"is_free": True,
 		'location': {
-			'location_num': 4,
+			'num': 4,
 			'coords': [200, 200]
 		}
 	}
@@ -154,3 +154,6 @@ def just_jump():
 	}
 	return respons
  
+
+if __name__ == "__main__":
+	app.run(port=5000)
