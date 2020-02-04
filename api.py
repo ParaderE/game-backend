@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-	return "running"
+	return "<h1>running</h1>"
 
 
 @app.route("/register/", methods=['POST'])
