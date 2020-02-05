@@ -32,7 +32,7 @@ class Location:
     def update(self, account, coords):
         """update players coords on the location"""
         self.players[account] = {'name': account, 'coords': coords}
-        return [(pl['name'], pl['coords']) for pl in self.players.values()]
+        return [{'name': pl['name'], 'coords': pl['coords']} for pl in self.players.values()]
     
     def add_objects(self, *objects):
         self.objects = {object.number: object for object in objects}
