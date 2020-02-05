@@ -105,7 +105,7 @@ def update_position():
 	}
 
 	location = graph[location_num]
-	response['players'] = [{'name': player.name, 'coords': player.coords} for player in location.update(account, coords)]
+	response['players'] = [{'name': player['name'], 'coords': player['coords']} for player in location.update(account, coords)]
 
 	return response
 
