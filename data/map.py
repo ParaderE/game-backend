@@ -22,6 +22,7 @@ class Location:
         """initialize a location with """
         self.number = n
         self.players = dict()
+        self.objects = dict()
     
     def __getitem__(self, key):
         return self.objects[key]
@@ -44,17 +45,17 @@ class Location:
 graph = Map()
 [graph.add_location(Location(i)) for i in range(1, 11)]
 
-#%% Location 4 
+# Location 4 
 graph[4].add_objects(
-    Gate((340, 50), 1),
-    Gate((320, 380), 2),
-    TradeStation((205, 190), 3),
-    QuestStation((160, 160), 4)
+    Gate((120, 50), 1),
+    Gate((340, 380), 2),
+    TradeStation((15, 67), 3),
+    QuestStation((160, 392), 4)
 )
 graph[4][1].link(9)
 graph[4][2].link(6)
 ###
-#%% Location 1
+# Location 1
 graph[1].add_objects(
     Gate((20, 376), 1),
     Turret((20, 20), 2),
@@ -65,7 +66,7 @@ graph[1].add_objects(
 )
 graph[1][1].link(8)
 ###
-#%% Location 6
+# Location 6
 graph[6].add_objects(
     Gate((100, 100), 1),
     Gate((376, 99), 2)
@@ -73,7 +74,7 @@ graph[6].add_objects(
 graph[6][1].link(4)
 graph[6][2].link(10)
 ###
-#%% location 10
+# location 10
 graph[10].add_objects(
     Gate((100, 100), 1),
     Gate((376, 99), 2)
@@ -81,7 +82,7 @@ graph[10].add_objects(
 graph[10][1].link(6)
 graph[10][2].link(9)
 ###
-#%% Location 9
+# Location 9
 graph[9].add_objects(
     Gate((276, 199), 1),
 )
