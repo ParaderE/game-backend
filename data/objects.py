@@ -67,4 +67,7 @@ class QuestStation(SpaceObject):
 
 
 class Turret(SpaceObject):
-    pass
+    type = 'turret'
+
+    def __init__(self, coords, number):
+        super().__init__()
