@@ -56,6 +56,7 @@ def enter():
 	}
 	return response
 
+
 @app.route('/objects/', methods=["POST"])
 def get_objects():
 	req = request.json

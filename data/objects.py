@@ -70,4 +70,4 @@ class Turret(SpaceObject):
     type = 'turret'
 
     def __init__(self, coords, number):
-        super().__init__()
+        super().__init__(coords, number)
