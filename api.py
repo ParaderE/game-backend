@@ -74,23 +74,24 @@ def get_objects():
 @app.route("/exit/", methods=["POST"])
 def exit():
 	req = request.json
+	print(req)
 	account = req['account']
 	login = account['login']
 	password = account['password']
 
-	location = req['location']
-	location_num = location['num']
-	coords = location['coords']
+	position = req['position']
+	location = position['location']
+	coords = position['coords']
 
-	del graph[location_num][login + " " + password]
+	del graph[location][login + " " + password]
 	with sqlite3.connect('players.db') as con:
 		cur = con.cursor()
-		cur.execute(f"""UPDATE Players
-		location = {location_num},
+		cur.execute(f"""UPDATE Players SET
+		location = {location},
 		x = {coords[0]}, y = {coords[1]}
 		WHERE name = {login} AND password = {password}""")
 		con.commit()
-	return ""
+	return {'res': True}
 
 
 @app.route("/update/", methods=["POST"])
