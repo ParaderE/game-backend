@@ -33,7 +33,7 @@ def register():
 		if is_free:
 			cur.execute(f"""INSERT INTO Players (name, password, location, x, y, health)
 						VALUES ('{login}', '{password}', {4}, {200}, {200}, {100});""")
-		con.commit()
+			con.commit()
 	return response
 
 
@@ -54,6 +54,7 @@ def enter():
 			'coords': res[0][1:]
 		}
 	}
+	print(response)
 	return response
 
 
@@ -74,7 +75,6 @@ def get_objects():
 @app.route("/exit/", methods=["POST"])
 def exit():
 	req = request.json
-	print(req)
 	account = req['account']
 	login = account['login']
 	password = account['password']
