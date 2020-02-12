@@ -27,12 +27,12 @@ def register():
 	graph[4].update(login + " " + password, (200, 200))
 	with sqlite3.connect('players.db') as con:
 		cur = con.cursor()
-		res = cur.execute(f"SELECT * FROM Players WHERE name={login} AND password={password}").fetchall()
+		res = cur.execute(f"SELECT * FROM Players WHERE name='{login}' AND password='{password}'").fetchall()
 		is_free = len(res) == 0
 		response['is_free'] = is_free
 		if is_free:
 			cur.execute(f"""INSERT INTO Players (name, password, location, x, y, health)
-						VALUES ({login}, {password}, {4}, {200}, {200}, {100});""")
+						VALUES ('{login}', '{password}', {4}, {200}, {200}, {100});""")
 		con.commit()
 	return response
 
@@ -46,7 +46,7 @@ def enter():
 
 	with sqlite3.connect('players.db') as con:
 		cur = con.cursor()
-		res = cur.execute(f"SELECT location, x, y FROM Players WHERE name={login} AND password={password}").fetchall()
+		res = cur.execute(f"SELECT location, x, y FROM Players WHERE name='{login}' AND password='{password}'").fetchall()
 
 	response = {
 		'location': {
@@ -89,7 +89,7 @@ def exit():
 		cur.execute(f"""UPDATE Players SET
 		location = {location},
 		x = {coords[0]}, y = {coords[1]}
-		WHERE name = {login} AND password = {password}""")
+		WHERE name = '{login}' AND password = '{password}'""")
 		con.commit()
 	return {'res': True}
 
