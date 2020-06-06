@@ -124,6 +124,9 @@ class TcpServer(Thread):
                 db.exit(user['login'], user['password'], client.location, client.coords)
                 self.locations.leave(identifier, client.location)
 
+    def stop(self):
+        self.sock.close()
+    
 
 class UdpServer(Thread):
 
