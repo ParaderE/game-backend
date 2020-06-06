@@ -13,7 +13,7 @@ class Map:
         return self.locations[key]
 
     def create_location(self, id):
-        self.rooms[identifier] = Location(id)
+        self.locations[identifier] = Location(id)
 
     def register(self, addr, udp_port):
         player = Player(addr, udp_port)
@@ -30,7 +30,7 @@ class Map:
     def leave(self, id, location_id):
         player = self.players[id]
 
-        self.rooms[location_id].leave(player)
+        self.locations[location_id].leave(player)
 
     def update(self, identifier, location_id, data, sock):
         location = self.rooms[location_id]

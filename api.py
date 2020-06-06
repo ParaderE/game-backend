@@ -8,11 +8,11 @@ from data import db
 
 class TcpServer(Thread):
 
-    def __init__(self, port, rooms, lock):
+    def __init__(self, port, locations, lock):
         Thread.__init__(self)
         self.lock = lock
         self.tcp_port = int(port)
-        self.rooms = rooms
+        self.locations = locations
         self.is_listening = True
         self.msg = {"succes": None, "message": None}
 
@@ -63,7 +63,7 @@ class TcpServer(Thread):
         if action == "register":
             user = payload['user']
 
-            client = self.rooms.register(addr, int(payload['port']), user['login'])
+            client = self.locations.register(addr, int(payload['port']), user['login'])
             if not db.register(user['login'], user['password']):
                 client.send_tcp(False, "User exist", sock)
                 return 0
@@ -74,14 +74,14 @@ class TcpServer(Thread):
                     "coords": [200, 200]
                 }
             }
-            self.rooms.join(client.id, 4)
+            self.locations.join(client.id, 4)
             client.send_tcp(True, response, sock)
             return 0
 
         elif action == "enter":
             user = payload['user']
 
-            client = self.rooms.register(addr, int(payload['port']), user['login'])
+            client = self.locations.register(addr, int(payload['port']), user['login'])
             position = db.login(user['login'], user['password'])
             if not position:
                 client.send_tcp(False, "User not found", sock)
@@ -90,23 +90,23 @@ class TcpServer(Thread):
                 "id": client.id,
                 "position": position
             }
-            self.rooms.join(client.id, position['location'])
+            self.locations.join(client.id, position['location'])
             client.send_tcp(True, response, sock)
             return 0
         
         if identifier is not None:
 
-            client = self.rooms.players[identifier]
+            client = self.locations.players[identifier]
 
             if action == "get":
                 target = payload['target']
 
                 if target == "all":
-                    data =  tuple(map(lambda x: x.json(), self.rooms[client.location].objects.values()))
+                    data =  tuple(map(lambda x: x.json(), self.locations[client.location].objects.values()))
                 elif target.isdigit():
                     target = int(target)
-                    if target in self.rooms[client.location]:
-                        data = self.rooms[client.location].objects[target].json()
+                    if target in self.locations[client.location]:
+                        data = self.locations[client.location].objects[target].json()
                     else:
                         client.send_tcp(False, "Object not found", sock)
                         return 0
@@ -115,14 +115,14 @@ class TcpServer(Thread):
                 
             elif action == "join":
                 location_id = payload['location_id']
-                self.rooms.leave(client, client.location)
+                self.locations.leave(client, client.location)
                 client.location = location_id
-                self.rooms.join(client, location_id)
+                self.locations.join(client, location_id)
                 client.send_tcp(True, location_id, sock)
             elif action == 'leave':
                 user = payload['user']
                 db.exit(user['login'], user['password'], client.location, client.coords)
-                self.rooms.leave(identifier, client.location)
+                self.locations.leave(identifier, client.location)
 
 
 class UdpServer(Thread):
@@ -131,7 +131,7 @@ class UdpServer(Thread):
         Thread.__init__(self)
         self.lock = lock
         self.udp_port = int(udp_port)
-        self.rooms = rooms
+        self.locations = rooms
         self.is_listening = True
         self.msg = {"success": None, "message": None}
 
@@ -158,7 +158,7 @@ class UdpServer(Thread):
                 self.lock.acquire()
                 try:
                     if action == "update":
-                        self.rooms.update(identifier, payload, self.sock)
+                        self.locations.update(identifier, payload, self.sock)
                 finally:
                     self.lock.release()
             except:
