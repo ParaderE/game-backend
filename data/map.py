@@ -72,7 +72,7 @@ class Location:
 
 
 graph = Map()
-[graph.create_location(Location(i)) for i in range(1, 11)]
+[graph.create_location(i) for i in range(1, 11)]
 
 # Location 4 
 graph[4].add_objects(
