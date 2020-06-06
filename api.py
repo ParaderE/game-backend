@@ -161,6 +161,8 @@ class UdpServer(Thread):
                         self.rooms.update(identifier, payload, self.sock)
                 finally:
                     self.lock.release()
+            except:
+                pass
         self.stop()
 
     def stop(self):
