@@ -18,7 +18,7 @@ class TcpServer(Thread):
 
     def run(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(('', self.tcp_port))
+        self.sock.bind(('0.0.0.0', self.tcp_port))
         self.sock.setblocking(0)
         self.sock.settimeout(5)
         self.sock.listen(1)
@@ -137,7 +137,7 @@ class UdpServer(Thread):
 
     def run(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('', self.udp_port))
+        self.sock.bind(('0.0.0.0', self.udp_port))
         self.sock.setblocking(0)
         self.sock.settimeout(5)
 
