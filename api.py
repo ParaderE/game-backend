@@ -195,4 +195,5 @@ def main_loop(tcp_port, udp_port, rooms):
 
 
 if __name__ == "__main__":
+    print(environ.get("PORT", 33500))
     main_loop(environ.get("PORT", 33500), environ.get("PORT", 33500), graph)
