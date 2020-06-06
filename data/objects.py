@@ -5,6 +5,9 @@ class SpaceObject:
     def __init__(self, coords, id):
         self.coords = coords
         self.id = id
+    
+    def json(self):
+        return {"id": self.id, "coords": self.coords, "type": self.type}
 
 
 class NPCObjects:
@@ -37,6 +40,15 @@ class Gate(SpaceObject):
     
     def get_location(self):
         return self.linked_location
+    
+    def json(self):
+        data = {
+            "id": self.id,
+            "coords": self.coords, 
+            "type": self.type,
+            "payload": self.linked_location
+        }
+        return data
 
 
 class TradeStation(SpaceObject):

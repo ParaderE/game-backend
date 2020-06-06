@@ -102,11 +102,11 @@ class TcpServer(Thread):
                 target = payload['target']
 
                 if target == "all":
-                    data = self.rooms[client.location].objects.values()
+                    data =  tuple(map(lambda x: x.json(), self.rooms[client.location].objects.values()))
                 elif target.isdigit():
                     target = int(target)
                     if target in self.rooms[client.location]:
-                        data = self.rooms[client.location].objects[target]
+                        data = self.rooms[client.location].objects[target].json()
                     else:
                         client.send_tcp(False, "Object not found", sock)
                         return 0
@@ -158,11 +158,7 @@ class UdpServer(Thread):
                 self.lock.acquire()
                 try:
                     if action == "update":
-                        try:
-                            self.rooms.update(identifier, payload, self.sock)
-                        except Exception:
-                            pass
-
+                        self.rooms.update(identifier, payload, self.sock)
                 finally:
                     self.lock.release()
 
