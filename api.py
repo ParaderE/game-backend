@@ -199,4 +199,4 @@ def main_loop(tcp_port, udp_port, rooms):
 
 
 if __name__ == "__main__":
-    main_loop(1000, 1000, graph)
+    main_loop(0, 0, graph)
