@@ -51,8 +51,9 @@ class Location:
         self.objects = dict()
         self.identifier = identifier
     
-    def add_objects(self, object):
-        self.objects[object.id] = object
+    def add_objects(self, *objects):
+        for object in objects:
+            self.objects[object.id] = object
 
     def __getitem__(self, key):
         return self.objects[key]
