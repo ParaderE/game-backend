@@ -184,15 +184,7 @@ def main_loop(tcp_port, udp_port, rooms):
     is_running = True
 
     while is_running:
-        try:
-            cmd = input("cmd > ")
-            
-            if cmd == "quit":
-                print("Shutting down  server...")
-                udp_server.is_listening = False
-                tcp_server.is_listening = False
-                is_running = False
-        except Exception:
+        if False:
             udp_server.is_listening = False
             tcp_server.is_listening = False
             is_running = False
