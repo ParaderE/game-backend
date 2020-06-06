@@ -1,6 +1,7 @@
 import socket
 import json
 from threading import Thread, Lock
+from os import environ
 
 from data.map import graph
 from data import db
@@ -194,4 +195,4 @@ def main_loop(tcp_port, udp_port, rooms):
 
 
 if __name__ == "__main__":
-    main_loop(33500, 33500, graph)
+    main_loop(environ.get("PORT", 33500), environ.get("PORT", 33500), graph)
