@@ -84,7 +84,7 @@ class TcpServer(Thread):
             client = self.rooms.register(addr, int(payload['port']), user['login'])
             position = db.login(user['login'], user['password'])
             if not position:
-                client.send_tcp(True, "User not found", sock)
+                client.send_tcp(False, "User not found", sock)
                 return 0
             repsonse = {
                 "id": client.id,
