@@ -1,5 +1,4 @@
 from .objects import Gate, TradeStation, QuestStation, Turret
-import uuid
 from .player import Player
 
 
@@ -12,8 +11,8 @@ class Map:
     def __getitem__(self, key):
         return self.locations[key]
 
-    def create_location(self, id):
-        self.locations[identifier] = Location(id)
+    def create_location(self, identifier):
+        self.locations[identifier] = Location(identifier)
 
     def register(self, addr, udp_port):
         player = Player(addr, udp_port)

@@ -1,5 +1,6 @@
 import sqlite3 as sql
 
+
 class SpaceObject:
 
     def __init__(self, coords, id):

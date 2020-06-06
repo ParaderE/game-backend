@@ -86,7 +86,7 @@ class TcpServer(Thread):
             if not position:
                 client.send_tcp(False, "User not found", sock)
                 return 0
-            repsonse = {
+            response = {
                 "id": client.id,
                 "position": position
             }
@@ -102,7 +102,7 @@ class TcpServer(Thread):
                 target = payload['target']
 
                 if target == "all":
-                    data =  tuple(map(lambda x: x.json(), self.locations[client.location].objects.values()))
+                    data = tuple(map(lambda x: x.json(), self.locations[client.location].objects.values()))
                 elif target.isdigit():
                     target = int(target)
                     if target in self.locations[client.location]:
@@ -161,7 +161,7 @@ class UdpServer(Thread):
                         self.locations.update(identifier, payload, self.sock)
                 finally:
                     self.lock.release()
-            except:
+            except Exception:
                 pass
         self.stop()
 
@@ -189,7 +189,7 @@ def main_loop(tcp_port, udp_port, rooms):
                 udp_server.is_listening = False
                 tcp_server.is_listening = False
                 is_running = False
-        except:
+        except Exception:
             udp_server.is_listening = False
             tcp_server.is_listening = False
             is_running = False
